@@ -12,38 +12,19 @@ namespace Jellyfin.Plugin.PaymentTracker.Services;
 /// Kapselt Synchronisation mit dem <see cref="IUserManager"/>, die Stichtag-Logik
 /// und alle Änderungen an der Plugin-Konfiguration.
 /// </summary>
-public class PaymentTrackerService
+/// <param name="userManager">Jellyfin-Benutzerverwaltung.</param>
+/// <param name="logger">Logger.</param>
+/// <param name="timeProvider">Zeitquelle (für Tests austauschbar); Standard ist die Systemzeit.</param>
+public class PaymentTrackerService(
+    IUserManager userManager,
+    ILogger<PaymentTrackerService> logger,
+    TimeProvider? timeProvider = null)
 {
     // Alle Lese-/Schreibzugriffe auf die Konfiguration laufen über diesen Lock,
     // da parallele API-Aufrufe sonst die XML-Datei gegenseitig überschreiben könnten.
     private static readonly object syncRoot = new();
 
-    private readonly IUserManager userManager;
-    private readonly ILogger<PaymentTrackerService> logger;
-    private readonly TimeProvider timeProvider;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PaymentTrackerService"/> class.
-    /// </summary>
-    /// <param name="userManager">Jellyfin-Benutzerverwaltung.</param>
-    /// <param name="logger">Logger.</param>
-    public PaymentTrackerService(IUserManager userManager, ILogger<PaymentTrackerService> logger)
-        : this(userManager, logger, TimeProvider.System)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PaymentTrackerService"/> class.
-    /// </summary>
-    /// <param name="userManager">Jellyfin-Benutzerverwaltung.</param>
-    /// <param name="logger">Logger.</param>
-    /// <param name="timeProvider">Zeitquelle (für Tests austauschbar).</param>
-    public PaymentTrackerService(IUserManager userManager, ILogger<PaymentTrackerService> logger, TimeProvider timeProvider)
-    {
-        this.userManager = userManager;
-        this.logger = logger;
-        this.timeProvider = timeProvider;
-    }
+    private readonly TimeProvider timeProvider = timeProvider ?? TimeProvider.System;
 
     private static Plugin PluginInstance => Plugin.Instance
         ?? throw new InvalidOperationException("Payment-Tracker-Plugin ist nicht initialisiert.");
