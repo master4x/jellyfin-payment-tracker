@@ -134,7 +134,7 @@ export default function (view) {
         // Actions
         const actions = el('div', { className: 'pt-actions' },
             button('+1 Monat', () => mutate(user, 'AddMonth')),
-            button(user.IsInGracePeriod ? 'Kulanz aus' : 'Kulanz an', () => mutate(user, 'ToggleGrace'))
+            button('Kulanz', () => mutate(user, 'ToggleGrace'))
         );
 
         tr.append(
