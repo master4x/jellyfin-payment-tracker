@@ -1,0 +1,168 @@
+name: Release
+
+on:
+  # Manuell über "Actions → Release → Run workflow".
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version (z. B. 1.0.1 oder 1.0.1.0)"
+        required: true
+      changelog:
+        description: "Changelog für Release und manifest.json"
+        required: false
+        default: "Fehlerbehebungen und Verbesserungen."
+
+  # Optional: automatisch bei jedem gepushten Versions-Tag (z. B. `git tag v1.0.1 && git push --tags`).
+  # Zum Aktivieren einfach die folgenden Zeilen einkommentieren.
+  # push:
+  #   tags:
+  #     - "v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+env:
+  PROJECT: Jellyfin.Plugin.PaymentTracker
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Version bestimmen
+        id: meta
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+          INPUT_CHANGELOG: ${{ inputs.changelog }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            RAW="${GITHUB_REF_NAME#v}"
+            CHANGELOG="Release ${GITHUB_REF_NAME}"
+          else
+            RAW="${INPUT_VERSION#v}"
+            CHANGELOG="${INPUT_CHANGELOG:-Release v$RAW}"
+          fi
+
+          # Jellyfin erwartet vierstellige Versionen (Major.Minor.Build.Revision).
+          if [[ "$RAW" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            RAW="$RAW.0"
+          elif [[ ! "$RAW" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Ungültige Version '$RAW' – erwartet x.y.z oder x.y.z.w"
+            exit 1
+          fi
+
+          if [ "$GITHUB_EVENT_NAME" != "push" ] && git rev-parse -q --verify "refs/tags/v$RAW" >/dev/null; then
+            echo "::error::Tag v$RAW existiert bereits."
+            exit 1
+          fi
+
+          # targetAbi = verwendete Jellyfin.Controller-Version (Mindest-Serverversion).
+          ABI=$(sed -n 's/.*Include="Jellyfin.Controller" Version="\([0-9.]*\)".*/\1/p' "$PROJECT/$PROJECT.csproj")
+          if [ -z "$ABI" ]; then
+            echo "::error::Jellyfin.Controller-Version nicht in der .csproj gefunden."
+            exit 1
+          fi
+          [[ "$ABI" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] && ABI="$ABI.0"
+
+          echo "version=$RAW" >> "$GITHUB_OUTPUT"
+          echo "tag=v$RAW" >> "$GITHUB_OUTPUT"
+          echo "abi=$ABI" >> "$GITHUB_OUTPUT"
+          echo "zip=payment-tracker_$RAW.zip" >> "$GITHUB_OUTPUT"
+          {
+            echo "changelog<<CHANGELOG_EOF"
+            echo "$CHANGELOG"
+            echo "CHANGELOG_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: .NET einrichten
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Build
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          dotnet publish "$PROJECT" -c Release -o publish \
+            -p:Version="$VERSION" -p:AssemblyVersion="$VERSION" -p:FileVersion="$VERSION"
+
+      - name: Paket erstellen
+        id: pkg
+        env:
+          ZIP: ${{ steps.meta.outputs.zip }}
+        run: |
+          # Nur die Plugin-DLL – alle Jellyfin-Assemblies liefert der Server selbst.
+          (cd publish && zip -j "../$ZIP" "$PROJECT.dll")
+          echo "md5=$(md5sum "$ZIP" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+          unzip -l "$ZIP"
+
+      - name: GitHub Release veröffentlichen
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.meta.outputs.tag }}
+          ZIP: ${{ steps.meta.outputs.zip }}
+          CHANGELOG: ${{ steps.meta.outputs.changelog }}
+        run: |
+          gh release create "$TAG" "$ZIP" \
+            --title "$TAG" \
+            --notes "$CHANGELOG" \
+            --target "$GITHUB_SHA"
+
+      - name: manifest.json aktualisieren
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+          TAG: ${{ steps.meta.outputs.tag }}
+          ABI: ${{ steps.meta.outputs.abi }}
+          ZIP: ${{ steps.meta.outputs.zip }}
+          MD5: ${{ steps.pkg.outputs.md5 }}
+          CHANGELOG: ${{ steps.meta.outputs.changelog }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          # Bei Tag-Builds steht der Checkout auf dem Tag – das Manifest gehört aber auf den Default-Branch.
+          git fetch origin "$DEFAULT_BRANCH"
+          git checkout -B "$DEFAULT_BRANCH" "origin/$DEFAULT_BRANCH"
+
+          jq --arg version "$VERSION" \
+             --arg changelog "$CHANGELOG" \
+             --arg abi "$ABI" \
+             --arg url "https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/$ZIP" \
+             --arg md5 "$MD5" \
+             --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+             '.[0].versions = ([{
+                 version: $version,
+                 changelog: $changelog,
+                 targetAbi: $abi,
+                 sourceUrl: $url,
+                 checksum: $md5,
+                 timestamp: $ts
+               }] + [.[0].versions[] | select(.version != $version)])' \
+             manifest.json > manifest.tmp && mv manifest.tmp manifest.json
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add manifest.json
+          git commit -m "Update manifest for $TAG"
+          git push origin "$DEFAULT_BRANCH"
+
+      - name: Zusammenfassung
+        env:
+          TAG: ${{ steps.meta.outputs.tag }}
+          ABI: ${{ steps.meta.outputs.abi }}
+          MD5: ${{ steps.pkg.outputs.md5 }}
+        run: |
+          {
+            echo "### Release $TAG veröffentlicht"
+            echo "- targetAbi: \`$ABI\`"
+            echo "- MD5: \`$MD5\`"
+            echo "- Manifest: https://raw.githubusercontent.com/$GITHUB_REPOSITORY/${{ github.event.repository.default_branch }}/manifest.json"
+          } >> "$GITHUB_STEP_SUMMARY"

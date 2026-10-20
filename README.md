@@ -24,17 +24,22 @@ Alle Daten liegen in der Plugin-Konfiguration (`<data>/plugins/configurations/Je
 
 ## Bauen & Veröffentlichen
 
-```powershell
-./build.ps1 -Version 1.0.0.0
-```
+Releases erstellt der Workflow [`.github/workflows/release.yml`](.github/workflows/release.yml):
 
-1. ZIP aus `artifacts/` als Asset eines GitHub-Releases `v1.0.0.0` hochladen.
-2. Aktualisierte `manifest.json` committen und pushen.
+1. *Actions → Release → Run workflow*, Version (z. B. `1.0.1`) und Changelog eingeben.
+2. Der Workflow baut die DLL, veröffentlicht das ZIP als GitHub-Release `v1.0.1`, trägt
+   Version, MD5-Checksumme und `targetAbi` (aus der `Jellyfin.Controller`-Version) in
+   `manifest.json` ein und committet sie auf den Default-Branch.
 3. In Jellyfin unter *Dashboard → Plugins → Repositories* die Raw-URL eintragen:
    `https://raw.githubusercontent.com/master4x/jellyfin-payment-tracker/master/manifest.json`
 
 > **Hinweis:** Solange das Repository privat ist, kann Jellyfin weder `manifest.json` noch das
 > Release-ZIP ohne Authentifizierung abrufen. Für die Installation per Repository-URL muss das
 > Repo (oder ein separates Manifest-Repo bzw. GitHub Pages) öffentlich erreichbar sein.
+
+**Automatische Releases (optional):** Im Workflow den auskommentierten `push: tags`-Block aktivieren.
+Danach löst `git tag v1.0.2 && git push origin v1.0.2` ein Release aus.
+
+Lokaler Build: `dotnet build -c Release`.
 
 Manuelle Installation: DLL nach `<data>/plugins/PaymentTracker_1.0.0.0/` kopieren und Jellyfin neu starten.
