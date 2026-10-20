@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Jellyfin.Plugin.PaymentTracker.Api;
 
 /// <summary>
-/// Admin-API für den Payment Tracker.
+/// Admin API of the payment tracker.
 /// </summary>
 [ApiController]
 [Authorize(Policy = Policies.RequiresElevation)]
@@ -23,26 +23,26 @@ public class PaymentController : ControllerBase
     /// <summary>
     /// Initializes a new instance of the <see cref="PaymentController"/> class.
     /// </summary>
-    /// <param name="service">Payment-Tracker-Service.</param>
+    /// <param name="service">Payment tracker service.</param>
     public PaymentController(PaymentTrackerService service)
     {
         this.service = service;
     }
 
     /// <summary>
-    /// Liefert alle Jellyfin-Benutzer mit berechnetem Zahlungsstatus.
+    /// Returns all Jellyfin users with their calculated payment status.
     /// </summary>
-    /// <returns>Liste aller Benutzer.</returns>
+    /// <returns>List of all users.</returns>
     [HttpGet("Users")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public ActionResult<IReadOnlyList<UserPaymentDto>> GetUsers()
         => Ok(service.GetUsers());
 
     /// <summary>
-    /// Verlängert den bezahlten Zeitraum um einen Monat.
+    /// Extends the paid period by one month.
     /// </summary>
-    /// <param name="request">User-ID.</param>
-    /// <returns>Der aktualisierte Benutzer.</returns>
+    /// <param name="request">User ID.</param>
+    /// <returns>The updated user.</returns>
     [HttpPost("AddMonth")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -50,10 +50,10 @@ public class PaymentController : ControllerBase
         => getActionResult(service.AddMonth(request.UserId));
 
     /// <summary>
-    /// Setzt den bezahlten Zeitraum manuell.
+    /// Sets the paid period manually.
     /// </summary>
-    /// <param name="request">User-ID, Jahr und Monat.</param>
-    /// <returns>Der aktualisierte Benutzer.</returns>
+    /// <param name="request">User ID, year and month.</param>
+    /// <returns>The updated user.</returns>
     [HttpPost("SetMonth")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -62,10 +62,10 @@ public class PaymentController : ControllerBase
         => getActionResult(service.SetMonth(request.UserId, request.Year, request.Month));
 
     /// <summary>
-    /// Schaltet den Kulanz-Status um.
+    /// Toggles the grace period.
     /// </summary>
-    /// <param name="request">User-ID.</param>
-    /// <returns>Der aktualisierte Benutzer.</returns>
+    /// <param name="request">User ID.</param>
+    /// <returns>The updated user.</returns>
     [HttpPost("ToggleGrace")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -73,10 +73,10 @@ public class PaymentController : ControllerBase
         => getActionResult(service.ToggleGrace(request.UserId));
 
     /// <summary>
-    /// Speichert die Notiz eines Benutzers.
+    /// Saves a user's note.
     /// </summary>
-    /// <param name="request">User-ID und Notiz.</param>
-    /// <returns>Der aktualisierte Benutzer.</returns>
+    /// <param name="request">User ID and note.</param>
+    /// <returns>The updated user.</returns>
     [HttpPost("UpdateNotes")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -84,5 +84,5 @@ public class PaymentController : ControllerBase
         => getActionResult(service.UpdateNotes(request.UserId, request.Notes));
 
     private ActionResult<UserPaymentDto> getActionResult(UserPaymentDto? dto)
-        => dto is null ? NotFound("Benutzer nicht gefunden.") : Ok(dto);
+        => dto is null ? NotFound("User not found.") : Ok(dto);
 }

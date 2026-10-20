@@ -9,7 +9,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <!-- Jellyfin lädt nur die Plugin-DLL; Abhängigkeiten liefert der Server selbst. -->
+    <!-- Jellyfin only loads the plugin DLL; the server provides all dependencies. -->
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 

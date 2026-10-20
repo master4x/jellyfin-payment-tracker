@@ -9,12 +9,12 @@ using MediaBrowser.Model.Serialization;
 namespace Jellyfin.Plugin.PaymentTracker;
 
 /// <summary>
-/// Einstiegspunkt des Payment-Tracker-Plugins.
+/// Entry point of the payment tracker plugin.
 /// </summary>
 public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 {
     /// <summary>
-    /// Feste Plugin-ID. Muss mit der <c>guid</c> in der manifest.json übereinstimmen.
+    /// Fixed plugin ID. Must match the <c>guid</c> in manifest.json.
     /// </summary>
     public static readonly Guid PluginId = Guid.Parse("8c3d7f1e-5b2a-4e9d-9a61-2f4b7c0d1e35");
 
@@ -36,7 +36,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     public override Guid Id => PluginId;
 
     /// <inheritdoc />
-    public override string Description => "Interne Zahlungs- und Kulanzübersicht der Benutzer.";
+    public override string Description => "Internal overview of user payments and grace periods.";
 
     /// <summary>
     /// Gets the current plugin instance.

@@ -3,20 +3,20 @@ using System.Text.Json.Serialization;
 namespace Jellyfin.Plugin.PaymentTracker.Models;
 
 /// <summary>
-/// Berechneter Zahlungsstatus. Wird als String (z. B. "Paid") serialisiert.
+/// Calculated payment status. Serialized as a string (e.g. "Paid").
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter<PaymentStatus>))]
 public enum PaymentStatus
 {
-    /// <summary>Im Voraus bezahlt (PaidUntil &gt; aktueller Monat).</summary>
+    /// <summary>Paid in advance (PaidUntil &gt; current month).</summary>
     Paid,
 
-    /// <summary>Fällig (PaidUntil == aktueller Monat).</summary>
+    /// <summary>Due (PaidUntil == current month).</summary>
     Due,
 
-    /// <summary>Rückstand (PaidUntil &lt; aktueller Monat).</summary>
+    /// <summary>Overdue (PaidUntil &lt; current month).</summary>
     Overdue,
 
-    /// <summary>Kulanz-/Testphase aktiv.</summary>
+    /// <summary>Grace or trial period active.</summary>
     Grace
 }

@@ -1,10 +1,10 @@
-/* Alle Regeln sind auf #PaymentTrackerPage begrenzt, da das Stylesheet global im <head> hängt. */
+/* All rules are scoped to #PaymentTrackerPage because the stylesheet is attached globally to <head>. */
 
 #PaymentTrackerPage .pt-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1em; }
 #PaymentTrackerPage .pt-summary { display: flex; gap: .6em; flex-wrap: wrap; margin: 1em 0 1.5em; }
 #PaymentTrackerPage .pt-chip { padding: .35em .8em; border-radius: 1em; font-size: .9em; background: rgba(255, 255, 255, .06); }
 
-/* Tabelle */
+/* Table */
 #PaymentTrackerPage .pt-table-wrap { overflow-x: auto; }
 #PaymentTrackerPage table.pt-table { width: 100%; border-collapse: collapse; }
 #PaymentTrackerPage .pt-table th { text-align: left; font-weight: 500; opacity: .7; padding: .6em .8em; border-bottom: 1px solid rgba(255, 255, 255, .15); white-space: nowrap; }
@@ -14,7 +14,7 @@
 #PaymentTrackerPage .pt-user { font-weight: 500; }
 #PaymentTrackerPage .pt-empty { padding: 2em; text-align: center; opacity: .6; }
 
-/* Status-Badges und Zeilenmarkierung */
+/* Status badges and row highlighting */
 #PaymentTrackerPage .pt-badge { display: inline-block; min-width: 7.5em; text-align: center; padding: .3em .7em; border-radius: .3em; font-size: .85em; font-weight: 600; white-space: nowrap; }
 #PaymentTrackerPage .pt-Paid .pt-badge { background: #2e7d32; color: #fff; }
 #PaymentTrackerPage .pt-Due .pt-badge { background: #c6d93a; color: #1b1b1b; }
@@ -25,7 +25,7 @@
 #PaymentTrackerPage tr.pt-Overdue { border-left-color: #c62828; background: rgba(198, 40, 40, .08); }
 #PaymentTrackerPage tr.pt-Grace { border-left-color: #6a4bc4; }
 
-/* Eingabefelder und Aktionen */
+/* Inputs and actions */
 #PaymentTrackerPage .pt-month { width: 10.5em; color-scheme: dark; }
 #PaymentTrackerPage .pt-notes-cell { display: flex; align-items: center; }
 #PaymentTrackerPage .pt-notes { width: 100%; min-width: 12em; }

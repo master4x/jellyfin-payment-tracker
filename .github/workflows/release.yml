@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version, vierstellig (z. B. 1.0.1.0)"
+        description: "Version, four parts (e.g. 1.0.1.0)"
         required: true
       changelog:
         description: "Changelog"
-        default: "Fehlerbehebungen und Verbesserungen."
+        default: "Bug fixes and improvements."
 
 permissions:
   contents: write
@@ -28,7 +28,7 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
-      - name: Build und Release
+      - name: Build and release
         run: |
           ZIP="payment-tracker_$VERSION.zip"
 
@@ -36,7 +36,7 @@ jobs:
           zip -j "$ZIP" "publish/$PROJECT.dll"
           gh release create "v$VERSION" "$ZIP" --title "v$VERSION" --notes "$CHANGELOG"
 
-          # targetAbi = verwendete Jellyfin.Controller-Version (Mindest-Serverversion).
+          # targetAbi = referenced Jellyfin.Controller version (minimum server version).
           ABI=$(sed -n 's/.*Include="Jellyfin.Controller" Version="\([0-9.]*\)".*/\1.0/p' "$PROJECT/$PROJECT.csproj")
 
           jq --arg v "$VERSION" --arg c "$CHANGELOG" --arg abi "$ABI" \

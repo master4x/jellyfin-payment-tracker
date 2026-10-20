@@ -2,8 +2,8 @@
   {
     "guid": "8c3d7f1e-5b2a-4e9d-9a61-2f4b7c0d1e35",
     "name": "Payment Tracker",
-    "description": "Interne Zahlungs- und Kulanzübersicht der Benutzer.",
-    "overview": "Monatsweise Verwaltung von Zahlungen inkl. Kulanzstatus und Notizen.",
+    "description": "Internal overview of user payments and grace periods.",
+    "overview": "Monthly payment tracking including grace periods and notes.",
     "owner": "master4x",
     "category": "Administration",
     "imageUrl": "",

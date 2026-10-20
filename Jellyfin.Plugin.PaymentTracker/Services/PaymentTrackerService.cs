@@ -9,31 +9,31 @@ using Microsoft.Extensions.Logging;
 namespace Jellyfin.Plugin.PaymentTracker.Services;
 
 /// <summary>
-/// Kapselt Synchronisation mit dem <see cref="IUserManager"/>, die Stichtag-Logik
-/// und alle Änderungen an der Plugin-Konfiguration.
+/// Encapsulates the sync with <see cref="IUserManager"/>, the due-date logic
+/// and all changes to the plugin configuration.
 /// </summary>
-/// <param name="userManager">Jellyfin-Benutzerverwaltung.</param>
+/// <param name="userManager">Jellyfin user manager.</param>
 /// <param name="logger">Logger.</param>
-/// <param name="timeProvider">Zeitquelle (für Tests austauschbar); Standard ist die Systemzeit.</param>
+/// <param name="timeProvider">Time source (replaceable for tests); defaults to the system clock.</param>
 public class PaymentTrackerService(
     IUserManager userManager,
     ILogger<PaymentTrackerService> logger,
     TimeProvider? timeProvider = null)
 {
-    // Alle Lese-/Schreibzugriffe auf die Konfiguration laufen über diesen Lock,
-    // da parallele API-Aufrufe sonst die XML-Datei gegenseitig überschreiben könnten.
+    // All reads and writes of the configuration go through this lock,
+    // otherwise concurrent API calls could overwrite each other's changes to the XML file.
     private static readonly object syncRoot = new();
 
     private readonly TimeProvider timeProvider = timeProvider ?? TimeProvider.System;
 
     private static Plugin PluginInstance => Plugin.Instance
-        ?? throw new InvalidOperationException("Payment-Tracker-Plugin ist nicht initialisiert.");
+        ?? throw new InvalidOperationException("Payment tracker plugin is not initialized.");
 
     /// <summary>
-    /// Liefert alle existierenden Jellyfin-Benutzer inkl. berechnetem Zahlungsstatus.
-    /// Unbekannte Benutzer werden dabei mit dem aktuellen Monat angelegt.
+    /// Returns all existing Jellyfin users including their calculated payment status.
+    /// Unknown users are initialized with the current month.
     /// </summary>
-    /// <returns>Liste der Benutzer, alphabetisch sortiert.</returns>
+    /// <returns>List of users, sorted alphabetically.</returns>
     public IReadOnlyList<UserPaymentDto> GetUsers()
     {
         lock (syncRoot)
@@ -44,7 +44,7 @@ public class PaymentTrackerService(
             var changed = false;
             var result = new List<UserPaymentDto>();
 
-            // Jellyfin 12: GetUsers() ersetzt die frühere Property IUserManager.Users.
+            // Jellyfin 12: GetUsers() replaces the former IUserManager.Users property.
             foreach (var user in userManager.GetUsers())
             {
                 if (!states.TryGetValue(user.Id, out var state))
@@ -58,14 +58,14 @@ public class PaymentTrackerService(
                     config.Users.Add(state);
                     states[user.Id] = state;
                     changed = true;
-                    logger.LogInformation("PaymentTracker: Neuer Benutzer {UserName} mit {Month}/{Year} initialisiert", user.Username, curMonth, curYear);
+                    logger.LogInformation("PaymentTracker: Initialized new user {UserName} with {Month}/{Year}", user.Username, curMonth, curYear);
                 }
 
                 result.Add(createUserPaymentDto(state, user.Username));
             }
 
-            // Einträge gelöschter Benutzer bleiben bewusst in der Konfiguration erhalten
-            // (kein Datenverlust), werden aber nicht mehr ausgeliefert.
+            // Entries of deleted users are intentionally kept in the configuration
+            // (no data loss) but are no longer returned.
             if (changed)
             {
                 PluginInstance.SaveConfiguration();
@@ -78,10 +78,10 @@ public class PaymentTrackerService(
     }
 
     /// <summary>
-    /// Verlängert den bezahlten Zeitraum um einen Monat (mit Jahreswechsel).
+    /// Extends the paid period by one month (including year rollover).
     /// </summary>
-    /// <param name="userId">Jellyfin-User-ID.</param>
-    /// <returns>Der aktualisierte Benutzer oder <c>null</c>, falls unbekannt.</returns>
+    /// <param name="userId">Jellyfin user ID.</param>
+    /// <returns>The updated user, or <c>null</c> if unknown.</returns>
     public UserPaymentDto? AddMonth(Guid userId)
         => updateAndSaveUserState(userId, state =>
         {
@@ -97,12 +97,12 @@ public class PaymentTrackerService(
         });
 
     /// <summary>
-    /// Setzt den bezahlten Zeitraum auf einen konkreten Monat.
+    /// Sets the paid period to a specific month.
     /// </summary>
-    /// <param name="userId">Jellyfin-User-ID.</param>
-    /// <param name="year">Jahr.</param>
-    /// <param name="month">Monat (1–12).</param>
-    /// <returns>Der aktualisierte Benutzer oder <c>null</c>, falls unbekannt.</returns>
+    /// <param name="userId">Jellyfin user ID.</param>
+    /// <param name="year">Year.</param>
+    /// <param name="month">Month (1–12).</param>
+    /// <returns>The updated user, or <c>null</c> if unknown.</returns>
     public UserPaymentDto? SetMonth(Guid userId, int year, int month)
         => updateAndSaveUserState(userId, state =>
         {
@@ -111,29 +111,29 @@ public class PaymentTrackerService(
         });
 
     /// <summary>
-    /// Schaltet den Kulanz-Status um.
+    /// Toggles the grace period.
     /// </summary>
-    /// <param name="userId">Jellyfin-User-ID.</param>
-    /// <returns>Der aktualisierte Benutzer oder <c>null</c>, falls unbekannt.</returns>
+    /// <param name="userId">Jellyfin user ID.</param>
+    /// <returns>The updated user, or <c>null</c> if unknown.</returns>
     public UserPaymentDto? ToggleGrace(Guid userId)
         => updateAndSaveUserState(userId, state => state.IsInGracePeriod = !state.IsInGracePeriod);
 
     /// <summary>
-    /// Speichert die Notiz eines Benutzers.
+    /// Saves a user's note.
     /// </summary>
-    /// <param name="userId">Jellyfin-User-ID.</param>
-    /// <param name="notes">Freitext.</param>
-    /// <returns>Der aktualisierte Benutzer oder <c>null</c>, falls unbekannt.</returns>
+    /// <param name="userId">Jellyfin user ID.</param>
+    /// <param name="notes">Free text.</param>
+    /// <returns>The updated user, or <c>null</c> if unknown.</returns>
     public UserPaymentDto? UpdateNotes(Guid userId, string? notes)
         => updateAndSaveUserState(userId, state => state.Notes = (notes ?? string.Empty).Trim());
 
     /// <summary>
-    /// Berechnet den Status anhand des aktuellen Kalendermonats.
+    /// Calculates the status based on the current calendar month.
     /// </summary>
-    /// <param name="state">Gespeicherter Zustand.</param>
-    /// <param name="currentYear">Aktuelles Jahr.</param>
-    /// <param name="currentMonth">Aktueller Monat.</param>
-    /// <returns>Der berechnete Status.</returns>
+    /// <param name="state">Stored state.</param>
+    /// <param name="currentYear">Current year.</param>
+    /// <param name="currentMonth">Current month.</param>
+    /// <returns>The calculated status.</returns>
     public static PaymentStatus CalculateStatus(UserPaymentState state, int currentYear, int currentMonth)
     {
         if (state.IsInGracePeriod)
@@ -141,7 +141,7 @@ public class PaymentTrackerService(
             return PaymentStatus.Grace;
         }
 
-        // Tupel werden lexikografisch verglichen (erst Jahr, dann Monat) – ohne Überlauf bei großen Jahren.
+        // Tuples compare lexicographically (year first, then month) – no overflow for large years.
         return (state.PaidUntilYear, state.PaidUntilMonth).CompareTo((currentYear, currentMonth)) switch
         {
             > 0 => PaymentStatus.Paid,

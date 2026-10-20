@@ -40,8 +40,8 @@ function el(tag, props, ...children) {
     return node;
 }
 
-// Jellyfin übernimmt nur den Seiten-Container ins DOM, daher wird das
-// Stylesheet (eigene Embedded Resource) einmalig in den <head> gehängt.
+// Jellyfin only inserts the page container into the DOM, so the stylesheet
+// (a separate embedded resource) is appended to <head> once.
 function ensureStylesheet() {
     if (document.getElementById(STYLESHEET_ID)) {
         return;
@@ -88,7 +88,7 @@ export default function (view) {
         // Status
         const badge = el('span', { className: 'pt-badge' }, STATUS[user.Status]?.label ?? user.Status);
 
-        // Bezahlt bis – manuell änderbar (SetMonth)
+        // Paid until – editable manually (SetMonth)
         const monthInput = el('input', {
             type: 'month',
             className: 'emby-input pt-month',
@@ -103,7 +103,7 @@ export default function (view) {
             mutate(user, 'SetMonth', { Year: y, Month: m });
         });
 
-        // Notiz – speichert bei Enter oder beim Verlassen des Felds
+        // Note – saved on Enter or when the field loses focus
         const saved = el('span', { className: 'pt-saved' }, '✓');
         const notesInput = el('input', {
             type: 'text',
@@ -131,7 +131,7 @@ export default function (view) {
         });
         notesInput.addEventListener('blur', saveNotes);
 
-        // Aktionen
+        // Actions
         const actions = el('div', { className: 'pt-actions' },
             button('+1 Monat', () => mutate(user, 'AddMonth')),
             button(user.IsInGracePeriod ? 'Kulanz aus' : 'Kulanz an', () => mutate(user, 'ToggleGrace'))

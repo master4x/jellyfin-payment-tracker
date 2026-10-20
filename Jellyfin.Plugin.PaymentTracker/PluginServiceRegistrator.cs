@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Jellyfin.Plugin.PaymentTracker;
 
 /// <summary>
-/// Registriert die Plugin-Services im DI-Container von Jellyfin.
+/// Registers the plugin services in Jellyfin's DI container.
 /// </summary>
 public class PluginServiceRegistrator : IPluginServiceRegistrator
 {
