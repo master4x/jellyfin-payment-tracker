@@ -1,0 +1,21 @@
+[
+  {
+    "guid": "8c3d7f1e-5b2a-4e9d-9a61-2f4b7c0d1e35",
+    "name": "Payment Tracker",
+    "description": "Interne Zahlungs- und Kulanzübersicht für Barzahlungen der Benutzer.",
+    "overview": "Monatsweise Verwaltung von Barzahlungen inkl. Kulanzstatus und Notizen.",
+    "owner": "master4x",
+    "category": "Administration",
+    "imageUrl": "",
+    "versions": [
+      {
+        "version": "1.0.0.0",
+        "changelog": "Erste Version.",
+        "targetAbi": "12.2.0.0",
+        "sourceUrl": "https://github.com/master4x/jellyfin-payment-tracker/releases/download/v1.0.0.0/payment-tracker_1.0.0.0.zip",
+        "checksum": "WIRD_VON_build.ps1_GESETZT",
+        "timestamp": "2026-10-20T00:00:00Z"
+      }
+    ]
+  }
+]
