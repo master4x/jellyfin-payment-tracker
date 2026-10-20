@@ -142,11 +142,8 @@ public class PaymentTrackerService(
             return PaymentStatus.Grace;
         }
 
-        // Monate als fortlaufenden Index vergleichen – spart Sonderfälle beim Jahreswechsel.
-        var paid = (state.PaidUntilYear * 12) + (state.PaidUntilMonth - 1);
-        var current = (currentYear * 12) + (currentMonth - 1);
-
-        return paid.CompareTo(current) switch
+        // Tupel werden lexikografisch verglichen (erst Jahr, dann Monat) – ohne Überlauf bei großen Jahren.
+        return (state.PaidUntilYear, state.PaidUntilMonth).CompareTo((currentYear, currentMonth)) switch
         {
             > 0 => PaymentStatus.Paid,
             0 => PaymentStatus.Due,

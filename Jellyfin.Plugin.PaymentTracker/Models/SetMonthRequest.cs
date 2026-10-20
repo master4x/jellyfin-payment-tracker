@@ -7,8 +7,8 @@ namespace Jellyfin.Plugin.PaymentTracker.Models;
 /// </summary>
 public class SetMonthRequest : UserIdRequest
 {
-    /// <summary>Gets or sets das Jahr.</summary>
-    [Range(2000, 2200)]
+    /// <summary>Gets or sets das Jahr (ab 2000, ohne Obergrenze).</summary>
+    [Range(2000, int.MaxValue)]
     public int Year { get; set; }
 
     /// <summary>Gets or sets den Monat.</summary>
