@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <title>Payment Tracker</title>
+</head>
+<body>
+    <div id="PaymentTrackerPage" data-role="page" class="page type-interior pluginConfigurationPage"
+         data-require="emby-input,emby-button" data-controller="__plugin/PaymentTrackerJs">
+
+        <div data-role="content">
+            <div class="content-primary">
+                <div class="pt-header">
+                    <h2 class="sectionTitle">Payment Tracker</h2>
+                    <button is="emby-button" type="button" class="raised" id="ptRefresh">
+                        <span>Aktualisieren</span>
+                    </button>
+                </div>
+                <div class="fieldDescription">
+                    Interne Übersicht der Barzahlungen. Stichtag ist der aktuelle Kalendermonat
+                    (<span id="ptCurrentMonth"></span>).
+                </div>
+
+                <div class="pt-summary" id="ptSummary"></div>
+
+                <div class="pt-table-wrap">
+                    <table class="pt-table">
+                        <thead>
+                            <tr>
+                                <th>Benutzer</th>
+                                <th>Status</th>
+                                <th>Bezahlt bis</th>
+                                <th>Notiz</th>
+                                <th>Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ptBody">
+                            <tr><td colspan="5" class="pt-empty">Lade Benutzer …</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

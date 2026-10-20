@@ -1,0 +1,35 @@
+/* Alle Regeln sind auf #PaymentTrackerPage begrenzt, da das Stylesheet global im <head> hängt. */
+
+#PaymentTrackerPage .pt-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1em; }
+#PaymentTrackerPage .pt-summary { display: flex; gap: .6em; flex-wrap: wrap; margin: 1em 0 1.5em; }
+#PaymentTrackerPage .pt-chip { padding: .35em .8em; border-radius: 1em; font-size: .9em; background: rgba(255, 255, 255, .06); }
+
+/* Tabelle */
+#PaymentTrackerPage .pt-table-wrap { overflow-x: auto; }
+#PaymentTrackerPage table.pt-table { width: 100%; border-collapse: collapse; }
+#PaymentTrackerPage .pt-table th { text-align: left; font-weight: 500; opacity: .7; padding: .6em .8em; border-bottom: 1px solid rgba(255, 255, 255, .15); white-space: nowrap; }
+#PaymentTrackerPage .pt-table td { padding: .55em .8em; border-bottom: 1px solid rgba(255, 255, 255, .07); vertical-align: middle; }
+#PaymentTrackerPage .pt-table tr { border-left: 4px solid transparent; }
+#PaymentTrackerPage .pt-table tbody tr:hover { background: rgba(255, 255, 255, .04); }
+#PaymentTrackerPage .pt-user { font-weight: 500; }
+#PaymentTrackerPage .pt-empty { padding: 2em; text-align: center; opacity: .6; }
+
+/* Status-Badges und Zeilenmarkierung */
+#PaymentTrackerPage .pt-badge { display: inline-block; min-width: 7.5em; text-align: center; padding: .3em .7em; border-radius: .3em; font-size: .85em; font-weight: 600; white-space: nowrap; }
+#PaymentTrackerPage .pt-PAID .pt-badge { background: #2e7d32; color: #fff; }
+#PaymentTrackerPage .pt-DUE .pt-badge { background: #c6d93a; color: #1b1b1b; }
+#PaymentTrackerPage .pt-OVERDUE .pt-badge { background: #c62828; color: #fff; }
+#PaymentTrackerPage .pt-GRACE .pt-badge { background: #6a4bc4; color: #fff; }
+#PaymentTrackerPage tr.pt-PAID { border-left-color: #2e7d32; }
+#PaymentTrackerPage tr.pt-DUE { border-left-color: #c6d93a; }
+#PaymentTrackerPage tr.pt-OVERDUE { border-left-color: #c62828; background: rgba(198, 40, 40, .08); }
+#PaymentTrackerPage tr.pt-GRACE { border-left-color: #6a4bc4; }
+
+/* Eingabefelder und Aktionen */
+#PaymentTrackerPage .pt-month { width: 10.5em; color-scheme: dark; }
+#PaymentTrackerPage .pt-notes-cell { display: flex; align-items: center; }
+#PaymentTrackerPage .pt-notes { width: 100%; min-width: 12em; }
+#PaymentTrackerPage .pt-saved { opacity: 0; transition: opacity .3s; margin-left: .4em; color: #66bb6a; }
+#PaymentTrackerPage .pt-saved.show { opacity: 1; }
+#PaymentTrackerPage .pt-actions { display: flex; gap: .4em; flex-wrap: nowrap; }
+#PaymentTrackerPage .pt-actions .emby-button { margin: 0; padding: .45em .9em; font-size: .85em; white-space: nowrap; }
