@@ -9,11 +9,11 @@ namespace Jellyfin.Plugin.PaymentTracker.Services;
 public class PluginConfigStore : IPaymentConfigStore
 {
     /// <inheritdoc />
-    public PluginConfiguration Configuration => PluginInstance.Configuration;
+    public PluginConfiguration Configuration => pluginInstance.Configuration;
 
-    private static Plugin PluginInstance => Plugin.Instance
+    private static Plugin pluginInstance => Plugin.Instance
         ?? throw new InvalidOperationException("Payment tracker plugin is not initialized.");
 
     /// <inheritdoc />
-    public void Save() => PluginInstance.SaveConfiguration();
+    public void Save() => pluginInstance.SaveConfiguration();
 }
