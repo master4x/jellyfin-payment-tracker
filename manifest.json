@@ -9,6 +9,14 @@
     "imageUrl": "",
     "versions": [
       {
+        "version": "2.1.0.0",
+        "changelog": "Bug fixes and improvements.",
+        "targetAbi": "10.11.9.0",
+        "sourceUrl": "https://github.com/master4x/jellyfin-payment-tracker/releases/download/v2.1.0.0/payment-tracker_2.1.0.0.zip",
+        "checksum": "8b13847bcd21a9c0a6b16accc8f8d35b",
+        "timestamp": "2026-10-20T21:41:00Z"
+      },
+      {
         "version": "2.0.0.0",
         "changelog": "Backwards compatibility",
         "targetAbi": "10.11.0.0",
