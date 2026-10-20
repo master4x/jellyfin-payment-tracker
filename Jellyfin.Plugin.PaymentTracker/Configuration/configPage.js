@@ -185,6 +185,5 @@ export default function (view) {
 
     const now = new Date();
     view.querySelector('#ptCurrentMonth').textContent = formatMonth(now.getFullYear(), now.getMonth() + 1);
-    view.querySelector('#ptRefresh').addEventListener('click', load);
     view.addEventListener('viewshow', load);
 }

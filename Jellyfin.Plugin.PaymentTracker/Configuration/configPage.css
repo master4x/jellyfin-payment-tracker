@@ -1,6 +1,5 @@
 /* All rules are scoped to #PaymentTrackerPage because the stylesheet is attached globally to <head>. */
 
-#PaymentTrackerPage .pt-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1em; }
 #PaymentTrackerPage .pt-summary { display: flex; gap: .6em; flex-wrap: wrap; margin: 1em 0 1.5em; }
 #PaymentTrackerPage .pt-chip { padding: .35em .8em; border-radius: 1em; font-size: .9em; background: rgba(255, 255, 255, .06); }
 
