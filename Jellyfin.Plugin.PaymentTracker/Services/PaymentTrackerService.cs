@@ -61,7 +61,7 @@ public class PaymentTrackerService(
                     logger.LogInformation("PaymentTracker: Initialized new user {UserName} with {Month}/{Year}", user.Username, curMonth, curYear);
                 }
 
-                result.Add(createUserPaymentDto(state, user.Username));
+                result.Add(createUserPaymentDto(state, user.Username, (curYear, curMonth)));
             }
 
             // Entries of deleted users are intentionally kept in the configuration
@@ -167,23 +167,22 @@ public class PaymentTrackerService(
         lock (syncRoot)
         {
             var config = PluginInstance.Configuration;
+            var (curYear, curMonth) = getCurrentYearAndMonth();
             var state = config.Users.FirstOrDefault(s => s.UserId == userId);
             if (state is null)
             {
-                var (y, m) = getCurrentYearAndMonth();
-                state = new UserPaymentState { UserId = userId, PaidUntilYear = y, PaidUntilMonth = m };
+                state = new UserPaymentState { UserId = userId, PaidUntilYear = curYear, PaidUntilMonth = curMonth };
                 config.Users.Add(state);
             }
 
             change(state);
             PluginInstance.SaveConfiguration();
-            return createUserPaymentDto(state, user.Username);
+            return createUserPaymentDto(state, user.Username, (curYear, curMonth));
         }
     }
 
-    private UserPaymentDto createUserPaymentDto(UserPaymentState state, string userName)
+    private UserPaymentDto createUserPaymentDto(UserPaymentState state, string userName, (int Year, int Month) current)
     {
-        var (y, m) = getCurrentYearAndMonth();
         return new UserPaymentDto
         {
             UserId = state.UserId,
@@ -192,7 +191,7 @@ public class PaymentTrackerService(
             PaidUntilMonth = state.PaidUntilMonth,
             IsInGracePeriod = state.IsInGracePeriod,
             Notes = state.Notes,
-            Status = CalculateStatus(state, y, m)
+            Status = CalculateStatus(state, current.Year, current.Month)
         };
     }
 }
