@@ -47,7 +47,7 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<UserPaymentDto> AddMonth([FromBody] UserIdRequest request)
-        => result(service.AddMonth(request.UserId));
+        => okOrNotFound(service.AddMonth(request.UserId));
 
     /// <summary>
     /// Setzt den bezahlten Zeitraum manuell.
@@ -59,7 +59,7 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<UserPaymentDto> SetMonth([FromBody] SetMonthRequest request)
-        => result(service.SetMonth(request.UserId, request.Year, request.Month));
+        => okOrNotFound(service.SetMonth(request.UserId, request.Year, request.Month));
 
     /// <summary>
     /// Schaltet den Kulanz-Status um.
@@ -70,7 +70,7 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<UserPaymentDto> ToggleGrace([FromBody] UserIdRequest request)
-        => result(service.ToggleGrace(request.UserId));
+        => okOrNotFound(service.ToggleGrace(request.UserId));
 
     /// <summary>
     /// Speichert die Notiz eines Benutzers.
@@ -81,8 +81,8 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<UserPaymentDto> UpdateNotes([FromBody] UpdateNotesRequest request)
-        => result(service.UpdateNotes(request.UserId, request.Notes));
+        => okOrNotFound(service.UpdateNotes(request.UserId, request.Notes));
 
-    private ActionResult<UserPaymentDto> result(UserPaymentDto? dto)
+    private ActionResult<UserPaymentDto> okOrNotFound(UserPaymentDto? dto)
         => dto is null ? NotFound("Benutzer nicht gefunden.") : Ok(dto);
 }
