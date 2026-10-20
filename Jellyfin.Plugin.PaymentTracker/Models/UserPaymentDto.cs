@@ -1,3 +1,5 @@
+using System;
+
 namespace Jellyfin.Plugin.PaymentTracker.Models;
 
 /// <summary>
@@ -6,7 +8,7 @@ namespace Jellyfin.Plugin.PaymentTracker.Models;
 public class UserPaymentDto
 {
     /// <summary>Gets or sets die User-ID.</summary>
-    public string UserId { get; set; } = string.Empty;
+    public Guid UserId { get; set; }
 
     /// <summary>Gets or sets den Benutzernamen.</summary>
     public string UserName { get; set; } = string.Empty;

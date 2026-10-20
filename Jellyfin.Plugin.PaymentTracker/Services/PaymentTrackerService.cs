@@ -40,24 +40,23 @@ public class PaymentTrackerService(
         {
             var config = PluginInstance.Configuration;
             var (curYear, curMonth) = getCurrentYearAndMonth();
-            var states = config.Users.ToDictionary(s => s.UserId, StringComparer.OrdinalIgnoreCase);
+            var states = config.Users.ToDictionary(s => s.UserId);
             var changed = false;
             var result = new List<UserPaymentDto>();
 
             // Jellyfin 12: GetUsers() ersetzt die frühere Property IUserManager.Users.
             foreach (var user in userManager.GetUsers())
             {
-                var id = user.Id.ToString("N");
-                if (!states.TryGetValue(id, out var state))
+                if (!states.TryGetValue(user.Id, out var state))
                 {
                     state = new UserPaymentState
                     {
-                        UserId = id,
+                        UserId = user.Id,
                         PaidUntilYear = curYear,
                         PaidUntilMonth = curMonth
                     };
                     config.Users.Add(state);
-                    states[id] = state;
+                    states[user.Id] = state;
                     changed = true;
                     logger.LogInformation("PaymentTracker: Neuer Benutzer {UserName} mit {Month}/{Year} initialisiert", user.Username, curMonth, curYear);
                 }
@@ -83,7 +82,7 @@ public class PaymentTrackerService(
     /// </summary>
     /// <param name="userId">Jellyfin-User-ID.</param>
     /// <returns>Der aktualisierte Benutzer oder <c>null</c>, falls unbekannt.</returns>
-    public UserPaymentDto? AddMonth(string userId)
+    public UserPaymentDto? AddMonth(Guid userId)
         => updateAndSaveUserState(userId, state =>
         {
             if (state.PaidUntilMonth >= 12)
@@ -104,7 +103,7 @@ public class PaymentTrackerService(
     /// <param name="year">Jahr.</param>
     /// <param name="month">Monat (1–12).</param>
     /// <returns>Der aktualisierte Benutzer oder <c>null</c>, falls unbekannt.</returns>
-    public UserPaymentDto? SetMonth(string userId, int year, int month)
+    public UserPaymentDto? SetMonth(Guid userId, int year, int month)
         => updateAndSaveUserState(userId, state =>
         {
             state.PaidUntilYear = year;
@@ -116,7 +115,7 @@ public class PaymentTrackerService(
     /// </summary>
     /// <param name="userId">Jellyfin-User-ID.</param>
     /// <returns>Der aktualisierte Benutzer oder <c>null</c>, falls unbekannt.</returns>
-    public UserPaymentDto? ToggleGrace(string userId)
+    public UserPaymentDto? ToggleGrace(Guid userId)
         => updateAndSaveUserState(userId, state => state.IsInGracePeriod = !state.IsInGracePeriod);
 
     /// <summary>
@@ -125,7 +124,7 @@ public class PaymentTrackerService(
     /// <param name="userId">Jellyfin-User-ID.</param>
     /// <param name="notes">Freitext.</param>
     /// <returns>Der aktualisierte Benutzer oder <c>null</c>, falls unbekannt.</returns>
-    public UserPaymentDto? UpdateNotes(string userId, string? notes)
+    public UserPaymentDto? UpdateNotes(Guid userId, string? notes)
         => updateAndSaveUserState(userId, state => state.Notes = (notes ?? string.Empty).Trim());
 
     /// <summary>
@@ -157,14 +156,9 @@ public class PaymentTrackerService(
         return (now.Year, now.Month);
     }
 
-    private UserPaymentDto? updateAndSaveUserState(string userId, Action<UserPaymentState> change)
+    private UserPaymentDto? updateAndSaveUserState(Guid userId, Action<UserPaymentState> change)
     {
-        if (!Guid.TryParse(userId, out var guid))
-        {
-            return null;
-        }
-
-        var user = userManager.GetUserById(guid);
+        var user = userManager.GetUserById(userId);
         if (user is null)
         {
             return null;
@@ -173,12 +167,11 @@ public class PaymentTrackerService(
         lock (syncRoot)
         {
             var config = PluginInstance.Configuration;
-            var id = guid.ToString("N");
-            var state = config.Users.FirstOrDefault(s => string.Equals(s.UserId, id, StringComparison.OrdinalIgnoreCase));
+            var state = config.Users.FirstOrDefault(s => s.UserId == userId);
             if (state is null)
             {
                 var (y, m) = getCurrentYearAndMonth();
-                state = new UserPaymentState { UserId = id, PaidUntilYear = y, PaidUntilMonth = m };
+                state = new UserPaymentState { UserId = userId, PaidUntilYear = y, PaidUntilMonth = m };
                 config.Users.Add(state);
             }
 

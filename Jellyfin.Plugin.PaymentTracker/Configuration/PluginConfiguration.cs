@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MediaBrowser.Model.Plugins;
 
@@ -27,9 +28,9 @@ public class PluginConfiguration : BasePluginConfiguration
 public class UserPaymentState
 {
     /// <summary>
-    /// Gets or sets die Jellyfin-User-ID (Guid im "N"-Format, ohne Bindestriche).
+    /// Gets or sets die Jellyfin-User-ID.
     /// </summary>
-    public string UserId { get; set; } = string.Empty;
+    public Guid UserId { get; set; }
 
     /// <summary>
     /// Gets or sets das Jahr, bis zu dem bezahlt wurde (inklusive).
