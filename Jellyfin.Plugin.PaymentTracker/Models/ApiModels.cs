@@ -1,26 +1,26 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Jellyfin.Plugin.PaymentTracker.Models;
 
 /// <summary>
-/// Berechneter Zahlungsstatus.
+/// Berechneter Zahlungsstatus. Wird als String (z. B. "Paid") serialisiert.
 /// </summary>
-#pragma warning disable CA1707, SA1300 // Großgeschriebene Werte entsprechen dem API-Vertrag
+[JsonConverter(typeof(JsonStringEnumConverter<PaymentStatus>))]
 public enum PaymentStatus
 {
     /// <summary>Im Voraus bezahlt (PaidUntil &gt; aktueller Monat).</summary>
-    PAID,
+    Paid,
 
     /// <summary>Fällig (PaidUntil == aktueller Monat).</summary>
-    DUE,
+    Due,
 
     /// <summary>Rückstand (PaidUntil &lt; aktueller Monat).</summary>
-    OVERDUE,
+    Overdue,
 
     /// <summary>Kulanz-/Testphase aktiv.</summary>
-    GRACE
+    Grace
 }
-#pragma warning restore CA1707, SA1300
 
 /// <summary>
 /// Benutzer inkl. berechnetem Status, wie er an das Frontend geht.
@@ -45,8 +45,8 @@ public class UserPaymentDto
     /// <summary>Gets or sets die Notiz.</summary>
     public string Notes { get; set; } = string.Empty;
 
-    /// <summary>Gets or sets den Status (PAID, DUE, OVERDUE, GRACE).</summary>
-    public string Status { get; set; } = string.Empty;
+    /// <summary>Gets or sets den berechneten Status.</summary>
+    public PaymentStatus Status { get; set; }
 }
 
 /// <summary>

@@ -1,8 +1,8 @@
 const STATUS = {
-    PAID: { label: '🟢 Vorausbezahlt' },
-    DUE: { label: '🟩 Fällig' },
-    OVERDUE: { label: '🔴 Rückstand' },
-    GRACE: { label: '🎁 Kulanz' }
+    Paid: { label: '🟢 Vorausbezahlt' },
+    Due: { label: '🟩 Fällig' },
+    Overdue: { label: '🔴 Rückstand' },
+    Grace: { label: '🎁 Kulanz' }
 };
 
 const STYLESHEET_ID = 'paymentTrackerCss';
@@ -73,7 +73,7 @@ export default function (view) {
     }
 
     function renderSummary() {
-        const counts = { PAID: 0, DUE: 0, OVERDUE: 0, GRACE: 0 };
+        const counts = { Paid: 0, Due: 0, Overdue: 0, Grace: 0 };
         users.forEach(u => counts[u.Status]++);
         summary.replaceChildren(
             ...Object.keys(STATUS).map(key =>

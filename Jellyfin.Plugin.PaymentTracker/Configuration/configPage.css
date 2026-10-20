@@ -16,14 +16,14 @@
 
 /* Status-Badges und Zeilenmarkierung */
 #PaymentTrackerPage .pt-badge { display: inline-block; min-width: 7.5em; text-align: center; padding: .3em .7em; border-radius: .3em; font-size: .85em; font-weight: 600; white-space: nowrap; }
-#PaymentTrackerPage .pt-PAID .pt-badge { background: #2e7d32; color: #fff; }
-#PaymentTrackerPage .pt-DUE .pt-badge { background: #c6d93a; color: #1b1b1b; }
-#PaymentTrackerPage .pt-OVERDUE .pt-badge { background: #c62828; color: #fff; }
-#PaymentTrackerPage .pt-GRACE .pt-badge { background: #6a4bc4; color: #fff; }
-#PaymentTrackerPage tr.pt-PAID { border-left-color: #2e7d32; }
-#PaymentTrackerPage tr.pt-DUE { border-left-color: #c6d93a; }
-#PaymentTrackerPage tr.pt-OVERDUE { border-left-color: #c62828; background: rgba(198, 40, 40, .08); }
-#PaymentTrackerPage tr.pt-GRACE { border-left-color: #6a4bc4; }
+#PaymentTrackerPage .pt-Paid .pt-badge { background: #2e7d32; color: #fff; }
+#PaymentTrackerPage .pt-Due .pt-badge { background: #c6d93a; color: #1b1b1b; }
+#PaymentTrackerPage .pt-Overdue .pt-badge { background: #c62828; color: #fff; }
+#PaymentTrackerPage .pt-Grace .pt-badge { background: #6a4bc4; color: #fff; }
+#PaymentTrackerPage tr.pt-Paid { border-left-color: #2e7d32; }
+#PaymentTrackerPage tr.pt-Due { border-left-color: #c6d93a; }
+#PaymentTrackerPage tr.pt-Overdue { border-left-color: #c62828; background: rgba(198, 40, 40, .08); }
+#PaymentTrackerPage tr.pt-Grace { border-left-color: #6a4bc4; }
 
 /* Eingabefelder und Aktionen */
 #PaymentTrackerPage .pt-month { width: 10.5em; color-scheme: dark; }

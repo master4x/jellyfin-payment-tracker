@@ -7,10 +7,10 @@ Alle Daten liegen in der Plugin-Konfiguration (`<data>/plugins/configurations/Je
 
 | Status    | Bedingung                              | Farbe         |
 |-----------|----------------------------------------|---------------|
-| `GRACE`   | `IsInGracePeriod == true` (hat Vorrang)| 🎁 Lila       |
-| `PAID`    | bezahlt bis > aktueller Monat          | 🟢 Grün       |
-| `DUE`     | bezahlt bis == aktueller Monat         | 🟩 Gelbgrün   |
-| `OVERDUE` | bezahlt bis < aktueller Monat          | 🔴 Rot        |
+| `Grace`   | `IsInGracePeriod == true` (hat Vorrang)| 🎁 Lila       |
+| `Paid`    | bezahlt bis > aktueller Monat          | 🟢 Grün       |
+| `Due`     | bezahlt bis == aktueller Monat         | 🟩 Gelbgrün   |
+| `Overdue` | bezahlt bis < aktueller Monat          | 🔴 Rot        |
 
 ## API (nur Administratoren)
 

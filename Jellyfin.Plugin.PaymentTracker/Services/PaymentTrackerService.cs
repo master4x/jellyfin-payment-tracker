@@ -158,7 +158,7 @@ public class PaymentTrackerService
     {
         if (state.IsInGracePeriod)
         {
-            return PaymentStatus.GRACE;
+            return PaymentStatus.Grace;
         }
 
         // Monate als fortlaufenden Index vergleichen – spart Sonderfälle beim Jahreswechsel.
@@ -167,9 +167,9 @@ public class PaymentTrackerService
 
         return paid.CompareTo(current) switch
         {
-            > 0 => PaymentStatus.PAID,
-            0 => PaymentStatus.DUE,
-            _ => PaymentStatus.OVERDUE
+            > 0 => PaymentStatus.Paid,
+            0 => PaymentStatus.Due,
+            _ => PaymentStatus.Overdue
         };
     }
 
@@ -221,7 +221,7 @@ public class PaymentTrackerService
             PaidUntilMonth = state.PaidUntilMonth,
             IsInGracePeriod = state.IsInGracePeriod,
             Notes = state.Notes,
-            Status = CalculateStatus(state, y, m).ToString()
+            Status = CalculateStatus(state, y, m)
         };
     }
 }
