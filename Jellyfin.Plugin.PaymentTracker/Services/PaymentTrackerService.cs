@@ -39,7 +39,7 @@ public class PaymentTrackerService(
         lock (syncRoot)
         {
             var config = PluginInstance.Configuration;
-            var (curYear, curMonth) = CurrentMonth();
+            var (curYear, curMonth) = currentMonth();
             var states = config.Users.ToDictionary(s => s.UserId, StringComparer.OrdinalIgnoreCase);
             var changed = false;
             var result = new List<UserPaymentDto>();
@@ -62,7 +62,7 @@ public class PaymentTrackerService(
                     logger.LogInformation("PaymentTracker: Neuer Benutzer {UserName} mit {Month}/{Year} initialisiert", user.Username, curMonth, curYear);
                 }
 
-                result.Add(ToDto(state, user.Username));
+                result.Add(toDto(state, user.Username));
             }
 
             // Einträge gelöschter Benutzer bleiben bewusst in der Konfiguration erhalten
@@ -84,7 +84,7 @@ public class PaymentTrackerService(
     /// <param name="userId">Jellyfin-User-ID.</param>
     /// <returns>Der aktualisierte Benutzer oder <c>null</c>, falls unbekannt.</returns>
     public UserPaymentDto? AddMonth(string userId)
-        => Mutate(userId, state =>
+        => mutate(userId, state =>
         {
             if (state.PaidUntilMonth >= 12)
             {
@@ -105,7 +105,7 @@ public class PaymentTrackerService(
     /// <param name="month">Monat (1–12).</param>
     /// <returns>Der aktualisierte Benutzer oder <c>null</c>, falls unbekannt.</returns>
     public UserPaymentDto? SetMonth(string userId, int year, int month)
-        => Mutate(userId, state =>
+        => mutate(userId, state =>
         {
             state.PaidUntilYear = year;
             state.PaidUntilMonth = month;
@@ -117,7 +117,7 @@ public class PaymentTrackerService(
     /// <param name="userId">Jellyfin-User-ID.</param>
     /// <returns>Der aktualisierte Benutzer oder <c>null</c>, falls unbekannt.</returns>
     public UserPaymentDto? ToggleGrace(string userId)
-        => Mutate(userId, state => state.IsInGracePeriod = !state.IsInGracePeriod);
+        => mutate(userId, state => state.IsInGracePeriod = !state.IsInGracePeriod);
 
     /// <summary>
     /// Speichert die Notiz eines Benutzers.
@@ -126,7 +126,7 @@ public class PaymentTrackerService(
     /// <param name="notes">Freitext.</param>
     /// <returns>Der aktualisierte Benutzer oder <c>null</c>, falls unbekannt.</returns>
     public UserPaymentDto? UpdateNotes(string userId, string? notes)
-        => Mutate(userId, state => state.Notes = (notes ?? string.Empty).Trim());
+        => mutate(userId, state => state.Notes = (notes ?? string.Empty).Trim());
 
     /// <summary>
     /// Berechnet den Status anhand des aktuellen Kalendermonats.
@@ -154,13 +154,13 @@ public class PaymentTrackerService(
         };
     }
 
-    private (int Year, int Month) CurrentMonth()
+    private (int Year, int Month) currentMonth()
     {
         var now = timeProvider.GetLocalNow();
         return (now.Year, now.Month);
     }
 
-    private UserPaymentDto? Mutate(string userId, Action<UserPaymentState> change)
+    private UserPaymentDto? mutate(string userId, Action<UserPaymentState> change)
     {
         if (!Guid.TryParse(userId, out var guid))
         {
@@ -180,20 +180,20 @@ public class PaymentTrackerService(
             var state = config.Users.FirstOrDefault(s => string.Equals(s.UserId, id, StringComparison.OrdinalIgnoreCase));
             if (state is null)
             {
-                var (y, m) = CurrentMonth();
+                var (y, m) = currentMonth();
                 state = new UserPaymentState { UserId = id, PaidUntilYear = y, PaidUntilMonth = m };
                 config.Users.Add(state);
             }
 
             change(state);
             PluginInstance.SaveConfiguration();
-            return ToDto(state, user.Username);
+            return toDto(state, user.Username);
         }
     }
 
-    private UserPaymentDto ToDto(UserPaymentState state, string userName)
+    private UserPaymentDto toDto(UserPaymentState state, string userName)
     {
-        var (y, m) = CurrentMonth();
+        var (y, m) = currentMonth();
         return new UserPaymentDto
         {
             UserId = state.UserId,
