@@ -26,8 +26,8 @@ Alle Daten liegen in der Plugin-Konfiguration (`<data>/plugins/configurations/Je
 
 Releases erstellt der Workflow [`.github/workflows/release.yml`](.github/workflows/release.yml):
 
-1. *Actions → Release → Run workflow*, Version (z. B. `1.0.1`) und Changelog eingeben.
-2. Der Workflow baut die DLL, veröffentlicht das ZIP als GitHub-Release `v1.0.1`, trägt
+1. *Actions → Release → Run workflow*, Version (vierstellig, z. B. `1.0.1.0`) und Changelog eingeben.
+2. Der Workflow baut die DLL, veröffentlicht das ZIP als GitHub-Release `v1.0.1.0`, trägt
    Version, MD5-Checksumme und `targetAbi` (aus der `Jellyfin.Controller`-Version) in
    `manifest.json` ein und committet sie auf den Default-Branch.
 3. In Jellyfin unter *Dashboard → Plugins → Repositories* die Raw-URL eintragen:
