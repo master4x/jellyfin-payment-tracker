@@ -1,6 +1,6 @@
 # Jellyfin Payment Tracker
 
-Internes Jellyfin-Server-Plugin (Jellyfin 12.2 / .NET 10) zur monatsweisen Verwaltung von Barzahlungen.
+Internes Jellyfin-Server-Plugin (Jellyfin 12.2 / .NET 10) zur monatsweisen Verwaltung von Zahlungen.
 Alle Daten liegen in der Plugin-Konfiguration (`<data>/plugins/configurations/Jellyfin.Plugin.PaymentTracker.xml`) – keine externe Datenbank.
 
 ## Status-Logik

@@ -37,7 +37,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     public override Guid Id => PluginId;
 
     /// <inheritdoc />
-    public override string Description => "Interne Zahlungs- und Kulanzübersicht für Barzahlungen der Benutzer.";
+    public override string Description => "Interne Zahlungs- und Kulanzübersicht der Benutzer.";
 
     /// <summary>
     /// Gets the current plugin instance.
