@@ -47,7 +47,7 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<UserPaymentDto> AddMonth([FromBody] UserIdRequest request)
-        => okOrNotFound(service.AddMonth(request.UserId));
+        => getActionResult(service.AddMonth(request.UserId));
 
     /// <summary>
     /// Setzt den bezahlten Zeitraum manuell.
@@ -59,7 +59,7 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<UserPaymentDto> SetMonth([FromBody] SetMonthRequest request)
-        => okOrNotFound(service.SetMonth(request.UserId, request.Year, request.Month));
+        => getActionResult(service.SetMonth(request.UserId, request.Year, request.Month));
 
     /// <summary>
     /// Schaltet den Kulanz-Status um.
@@ -70,7 +70,7 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<UserPaymentDto> ToggleGrace([FromBody] UserIdRequest request)
-        => okOrNotFound(service.ToggleGrace(request.UserId));
+        => getActionResult(service.ToggleGrace(request.UserId));
 
     /// <summary>
     /// Speichert die Notiz eines Benutzers.
@@ -81,8 +81,8 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<UserPaymentDto> UpdateNotes([FromBody] UpdateNotesRequest request)
-        => okOrNotFound(service.UpdateNotes(request.UserId, request.Notes));
+        => getActionResult(service.UpdateNotes(request.UserId, request.Notes));
 
-    private ActionResult<UserPaymentDto> okOrNotFound(UserPaymentDto? dto)
+    private ActionResult<UserPaymentDto> getActionResult(UserPaymentDto? dto)
         => dto is null ? NotFound("Benutzer nicht gefunden.") : Ok(dto);
 }
