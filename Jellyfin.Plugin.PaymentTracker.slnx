@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="Jellyfin.Plugin.PaymentTracker.Tests/Jellyfin.Plugin.PaymentTracker.Tests.csproj" />
   <Project Path="Jellyfin.Plugin.PaymentTracker/Jellyfin.Plugin.PaymentTracker.csproj" />
 </Solution>

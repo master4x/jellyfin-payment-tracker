@@ -37,6 +37,6 @@ Releases erstellt der Workflow [`.github/workflows/release.yml`](.github/workflo
 > Release-ZIP ohne Authentifizierung abrufen. Für die Installation per Repository-URL muss das
 > Repo (oder ein separates Manifest-Repo bzw. GitHub Pages) öffentlich erreichbar sein.
 
-Lokaler Build: `dotnet build -c Release`.
+Lokaler Build: `dotnet build -c Release`, Tests: `dotnet test --solution Jellyfin.Plugin.PaymentTracker.slnx`.
 
 Manuelle Installation: DLL nach `<data>/plugins/PaymentTracker_1.0.0.0/` kopieren und Jellyfin neu starten.
