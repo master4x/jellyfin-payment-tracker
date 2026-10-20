@@ -18,7 +18,7 @@ namespace Jellyfin.Plugin.PaymentTracker.Api;
 [Produces(MediaTypeNames.Application.Json)]
 public class PaymentController : ControllerBase
 {
-    private readonly PaymentTrackerService _service;
+    private readonly PaymentTrackerService service;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PaymentController"/> class.
@@ -26,7 +26,7 @@ public class PaymentController : ControllerBase
     /// <param name="service">Payment-Tracker-Service.</param>
     public PaymentController(PaymentTrackerService service)
     {
-        _service = service;
+        this.service = service;
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ public class PaymentController : ControllerBase
     [HttpGet("Users")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public ActionResult<IReadOnlyList<UserPaymentDto>> GetUsers()
-        => Ok(_service.GetUsers());
+        => Ok(service.GetUsers());
 
     /// <summary>
     /// Verlängert den bezahlten Zeitraum um einen Monat.
@@ -47,7 +47,7 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<UserPaymentDto> AddMonth([FromBody] UserIdRequest request)
-        => Result(_service.AddMonth(request.UserId));
+        => Result(service.AddMonth(request.UserId));
 
     /// <summary>
     /// Setzt den bezahlten Zeitraum manuell.
@@ -59,7 +59,7 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<UserPaymentDto> SetMonth([FromBody] SetMonthRequest request)
-        => Result(_service.SetMonth(request.UserId, request.Year, request.Month));
+        => Result(service.SetMonth(request.UserId, request.Year, request.Month));
 
     /// <summary>
     /// Schaltet den Kulanz-Status um.
@@ -70,7 +70,7 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<UserPaymentDto> ToggleGrace([FromBody] UserIdRequest request)
-        => Result(_service.ToggleGrace(request.UserId));
+        => Result(service.ToggleGrace(request.UserId));
 
     /// <summary>
     /// Speichert die Notiz eines Benutzers.
@@ -81,7 +81,7 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<UserPaymentDto> UpdateNotes([FromBody] UpdateNotesRequest request)
-        => Result(_service.UpdateNotes(request.UserId, request.Notes));
+        => Result(service.UpdateNotes(request.UserId, request.Notes));
 
     private ActionResult<UserPaymentDto> Result(UserPaymentDto? dto)
         => dto is null ? NotFound("Benutzer nicht gefunden.") : Ok(dto);

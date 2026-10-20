@@ -16,11 +16,11 @@ public class PaymentTrackerService
 {
     // Alle Lese-/Schreibzugriffe auf die Konfiguration laufen über diesen Lock,
     // da parallele API-Aufrufe sonst die XML-Datei gegenseitig überschreiben könnten.
-    private static readonly object _lock = new();
+    private static readonly object syncRoot = new();
 
-    private readonly IUserManager _userManager;
-    private readonly ILogger<PaymentTrackerService> _logger;
-    private readonly TimeProvider _timeProvider;
+    private readonly IUserManager userManager;
+    private readonly ILogger<PaymentTrackerService> logger;
+    private readonly TimeProvider timeProvider;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PaymentTrackerService"/> class.
@@ -40,9 +40,9 @@ public class PaymentTrackerService
     /// <param name="timeProvider">Zeitquelle (für Tests austauschbar).</param>
     public PaymentTrackerService(IUserManager userManager, ILogger<PaymentTrackerService> logger, TimeProvider timeProvider)
     {
-        _userManager = userManager;
-        _logger = logger;
-        _timeProvider = timeProvider;
+        this.userManager = userManager;
+        this.logger = logger;
+        this.timeProvider = timeProvider;
     }
 
     private static Plugin PluginInstance => Plugin.Instance
@@ -55,7 +55,7 @@ public class PaymentTrackerService
     /// <returns>Liste der Benutzer, alphabetisch sortiert.</returns>
     public IReadOnlyList<UserPaymentDto> GetUsers()
     {
-        lock (_lock)
+        lock (syncRoot)
         {
             var config = PluginInstance.Configuration;
             var (curYear, curMonth) = CurrentMonth();
@@ -64,7 +64,7 @@ public class PaymentTrackerService
             var result = new List<UserPaymentDto>();
 
             // Jellyfin 12: GetUsers() ersetzt die frühere Property IUserManager.Users.
-            foreach (var user in _userManager.GetUsers())
+            foreach (var user in userManager.GetUsers())
             {
                 var id = user.Id.ToString("N");
                 if (!states.TryGetValue(id, out var state))
@@ -78,7 +78,7 @@ public class PaymentTrackerService
                     config.Users.Add(state);
                     states[id] = state;
                     changed = true;
-                    _logger.LogInformation("PaymentTracker: Neuer Benutzer {UserName} mit {Month}/{Year} initialisiert", user.Username, curMonth, curYear);
+                    logger.LogInformation("PaymentTracker: Neuer Benutzer {UserName} mit {Month}/{Year} initialisiert", user.Username, curMonth, curYear);
                 }
 
                 result.Add(ToDto(state, user.Username));
@@ -175,7 +175,7 @@ public class PaymentTrackerService
 
     private (int Year, int Month) CurrentMonth()
     {
-        var now = _timeProvider.GetLocalNow();
+        var now = timeProvider.GetLocalNow();
         return (now.Year, now.Month);
     }
 
@@ -186,13 +186,13 @@ public class PaymentTrackerService
             return null;
         }
 
-        var user = _userManager.GetUserById(guid);
+        var user = userManager.GetUserById(guid);
         if (user is null)
         {
             return null;
         }
 
-        lock (_lock)
+        lock (syncRoot)
         {
             var config = PluginInstance.Configuration;
             var id = guid.ToString("N");
