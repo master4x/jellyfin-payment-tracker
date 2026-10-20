@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Jellyfin.Plugin.PaymentTracker.Configuration;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
@@ -53,7 +52,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
             new PluginPageInfo
             {
                 Name = Name,
-                EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Configuration.configPage.html", ns),
+                EmbeddedResourcePath = $"{ns}.Configuration.configPage.html",
                 EnableInMainMenu = true,
                 MenuSection = "server",
                 MenuIcon = "payments"
@@ -61,12 +60,12 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
             new PluginPageInfo
             {
                 Name = "PaymentTrackerJs",
-                EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Configuration.configPage.js", ns)
+                EmbeddedResourcePath = $"{ns}.Configuration.configPage.js"
             },
             new PluginPageInfo
             {
                 Name = "PaymentTrackerCss",
-                EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Configuration.configPage.css", ns)
+                EmbeddedResourcePath = $"{ns}.Configuration.configPage.css"
             }
         ];
     }
