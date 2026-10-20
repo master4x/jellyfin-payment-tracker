@@ -37,9 +37,6 @@ Releases erstellt der Workflow [`.github/workflows/release.yml`](.github/workflo
 > Release-ZIP ohne Authentifizierung abrufen. Für die Installation per Repository-URL muss das
 > Repo (oder ein separates Manifest-Repo bzw. GitHub Pages) öffentlich erreichbar sein.
 
-**Automatische Releases (optional):** Im Workflow den auskommentierten `push: tags`-Block aktivieren.
-Danach löst `git tag v1.0.2 && git push origin v1.0.2` ein Release aus.
-
 Lokaler Build: `dotnet build -c Release`.
 
 Manuelle Installation: DLL nach `<data>/plugins/PaymentTracker_1.0.0.0/` kopieren und Jellyfin neu starten.
