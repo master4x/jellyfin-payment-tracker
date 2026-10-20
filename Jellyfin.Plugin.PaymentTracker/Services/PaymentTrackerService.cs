@@ -13,10 +13,12 @@ namespace Jellyfin.Plugin.PaymentTracker.Services;
 /// and all changes to the plugin configuration.
 /// </summary>
 /// <param name="userManager">Jellyfin user manager.</param>
+/// <param name="configStore">Access to the persisted plugin configuration.</param>
 /// <param name="logger">Logger.</param>
 /// <param name="timeProvider">Time source (replaceable for tests); defaults to the system clock.</param>
 public class PaymentTrackerService(
     IUserManager userManager,
+    IPaymentConfigStore configStore,
     ILogger<PaymentTrackerService> logger,
     TimeProvider? timeProvider = null)
 {
@@ -25,9 +27,6 @@ public class PaymentTrackerService(
     private static readonly object syncRoot = new();
 
     private readonly TimeProvider timeProvider = timeProvider ?? TimeProvider.System;
-
-    private static Plugin PluginInstance => Plugin.Instance
-        ?? throw new InvalidOperationException("Payment tracker plugin is not initialized.");
 
     /// <summary>
     /// Returns all existing Jellyfin users including their calculated payment status.
@@ -38,7 +37,7 @@ public class PaymentTrackerService(
     {
         lock (syncRoot)
         {
-            var config = PluginInstance.Configuration;
+            var config = configStore.Configuration;
             var (curYear, curMonth) = getCurrentYearAndMonth();
             var states = config.Users.ToDictionary(s => s.UserId);
             var changed = false;
@@ -68,7 +67,7 @@ public class PaymentTrackerService(
             // (no data loss) but are no longer returned.
             if (changed)
             {
-                PluginInstance.SaveConfiguration();
+                configStore.Save();
             }
 
             return result
@@ -166,7 +165,7 @@ public class PaymentTrackerService(
 
         lock (syncRoot)
         {
-            var config = PluginInstance.Configuration;
+            var config = configStore.Configuration;
             var (curYear, curMonth) = getCurrentYearAndMonth();
             var state = config.Users.FirstOrDefault(s => s.UserId == userId);
             if (state is null)
@@ -176,7 +175,7 @@ public class PaymentTrackerService(
             }
 
             change(state);
-            PluginInstance.SaveConfiguration();
+            configStore.Save();
             return createUserPaymentDto(state, user.Username, (curYear, curMonth));
         }
     }
