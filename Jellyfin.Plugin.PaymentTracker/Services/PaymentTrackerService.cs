@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Jellyfin.Plugin.PaymentTracker.Configuration;
 using Jellyfin.Plugin.PaymentTracker.Models;
 using MediaBrowser.Controller.Library;
@@ -24,7 +25,7 @@ public class PaymentTrackerService(
 {
     // All reads and writes of the configuration go through this lock,
     // otherwise concurrent API calls could overwrite each other's changes to the XML file.
-    private static readonly object syncRoot = new();
+    private static readonly Lock syncRoot = new();
 
     private readonly TimeProvider timeProvider = timeProvider ?? TimeProvider.System;
 
