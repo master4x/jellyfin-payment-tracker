@@ -33,10 +33,6 @@ Releases erstellt der Workflow [`.github/workflows/release.yml`](.github/workflo
 3. In Jellyfin unter *Dashboard → Plugins → Repositories* die Raw-URL eintragen:
    `https://raw.githubusercontent.com/master4x/jellyfin-payment-tracker/master/manifest.json`
 
-> **Hinweis:** Solange das Repository privat ist, kann Jellyfin weder `manifest.json` noch das
-> Release-ZIP ohne Authentifizierung abrufen. Für die Installation per Repository-URL muss das
-> Repo (oder ein separates Manifest-Repo bzw. GitHub Pages) öffentlich erreichbar sein.
-
 Lokaler Build: `dotnet build -c Release`, Tests: `dotnet test --solution Jellyfin.Plugin.PaymentTracker.slnx`.
 
 Manuelle Installation: DLL nach `<data>/plugins/PaymentTracker_1.0.0.0/` kopieren und Jellyfin neu starten.
