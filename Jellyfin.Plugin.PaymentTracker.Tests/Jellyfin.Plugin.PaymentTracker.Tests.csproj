@@ -15,8 +15,8 @@
     <PackageReference Include="NSubstitute" Version="6.2.0" />
     <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="10.11.0" />
     <!-- Unlike the plugin, the tests need the Jellyfin runtime assemblies to load the types. -->
-    <PackageReference Include="Jellyfin.Controller" Version="10.11.0" />
-    <PackageReference Include="Jellyfin.Model" Version="10.11.0" />
+    <PackageReference Include="Jellyfin.Controller" Version="10.11.9" />
+    <PackageReference Include="Jellyfin.Model" Version="10.11.9" />
   </ItemGroup>
 
   <ItemGroup>

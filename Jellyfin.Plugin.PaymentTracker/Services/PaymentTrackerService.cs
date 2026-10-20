@@ -44,8 +44,8 @@ public class PaymentTrackerService(
             var changed = false;
             var result = new List<UserPaymentDto>();
 
-            // Jellyfin 10.11 exposes the users as a property; Jellyfin 12 replaced it with GetUsers().
-            foreach (var user in userManager.Users)
+            // Jellyfin 10.11.9 replaced the former IUserManager.Users property with GetUsers().
+            foreach (var user in userManager.GetUsers())
             {
                 if (!states.TryGetValue(user.Id, out var state))
                 {

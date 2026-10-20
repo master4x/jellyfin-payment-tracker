@@ -1,11 +1,11 @@
 # Jellyfin Payment Tracker
 
-Internes Jellyfin-Server-Plugin (Jellyfin 10.11 / .NET 9) zur monatsweisen Verwaltung von Zahlungen.
+Internes Jellyfin-Server-Plugin (Jellyfin 10.11.9+ / .NET 9) zur monatsweisen Verwaltung von Zahlungen.
 Alle Daten liegen in der Plugin-Konfiguration (`<data>/plugins/configurations/Jellyfin.Plugin.PaymentTracker.xml`) – keine externe Datenbank.
 
 ## Installation
 
-Voraussetzung: Jellyfin 10.11. Jellyfin 12 wird nicht unterstützt.
+Voraussetzung: Jellyfin 10.11.9 oder neuer innerhalb von 10.11. Jellyfin 12 ist nicht getestet.
 
 1. *Dashboard → Plugins → Repositories* öffnen und ein Repository hinzufügen:
    - Name: `Payment Tracker`

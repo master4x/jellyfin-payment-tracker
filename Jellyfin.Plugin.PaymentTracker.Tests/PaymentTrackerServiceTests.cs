@@ -123,7 +123,7 @@ public class PaymentTrackerServiceTests
 
     private void setJellyfinUsers(params User[] users)
     {
-        userManager.Users.Returns(users);
+        userManager.GetUsers().Returns(users);
         foreach (var user in users)
         {
             registerUser(user);
