@@ -9,21 +9,12 @@
 #PaymentTrackerPage table.pt-table { width: 100%; border-collapse: collapse; }
 #PaymentTrackerPage .pt-table th { text-align: left; font-weight: 500; opacity: .7; padding: .6em .8em; border-bottom: 1px solid rgba(255, 255, 255, .15); white-space: nowrap; }
 #PaymentTrackerPage .pt-table td { padding: .55em .8em; border-bottom: 1px solid rgba(255, 255, 255, .07); vertical-align: middle; }
-#PaymentTrackerPage .pt-table tr { border-left: 4px solid transparent; }
 #PaymentTrackerPage .pt-table tbody tr:hover { background: rgba(255, 255, 255, .04); }
 #PaymentTrackerPage .pt-user { font-weight: 500; }
 #PaymentTrackerPage .pt-empty { padding: 2em; text-align: center; opacity: .6; }
 
-/* Status badges and row highlighting */
-#PaymentTrackerPage .pt-badge { display: inline-block; min-width: 7.5em; text-align: center; padding: .3em .7em; border-radius: .3em; font-size: .85em; font-weight: 600; white-space: nowrap; }
-#PaymentTrackerPage .pt-Paid .pt-badge { background: #2e7d32; color: #fff; }
-#PaymentTrackerPage .pt-Due .pt-badge { background: #c6d93a; color: #1b1b1b; }
-#PaymentTrackerPage .pt-Overdue .pt-badge { background: #c62828; color: #fff; }
-#PaymentTrackerPage .pt-Grace .pt-badge { background: #6a4bc4; color: #fff; }
-#PaymentTrackerPage tr.pt-Paid { border-left-color: #2e7d32; }
-#PaymentTrackerPage tr.pt-Due { border-left-color: #c6d93a; }
-#PaymentTrackerPage tr.pt-Overdue { border-left-color: #c62828; background: rgba(198, 40, 40, .08); }
-#PaymentTrackerPage tr.pt-Grace { border-left-color: #6a4bc4; }
+/* Status: emoji and label only, no color coding, so the emoji stays legible */
+#PaymentTrackerPage .pt-status { white-space: nowrap; }
 
 /* Inputs and actions */
 #PaymentTrackerPage .pt-month { width: 10.5em; color-scheme: dark; }

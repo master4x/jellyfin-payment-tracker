@@ -77,16 +77,16 @@ export default function (view) {
         users.forEach(u => counts[u.Status]++);
         summary.replaceChildren(
             ...Object.keys(STATUS).map(key =>
-                el('span', { className: `pt-chip pt-${key}` }, `${STATUS[key].label}: ${counts[key]}`))
+                el('span', { className: 'pt-chip' }, `${STATUS[key].label}: ${counts[key]}`))
         );
     }
 
     function renderRow(user) {
-        const tr = el('tr', { className: `pt-${user.Status}` });
+        const tr = el('tr');
         tr.dataset.userId = user.UserId;
 
         // Status
-        const badge = el('span', { className: 'pt-badge' }, STATUS[user.Status]?.label ?? user.Status);
+        const status = el('span', { className: 'pt-status' }, STATUS[user.Status]?.label ?? user.Status);
 
         // Paid until – editable manually (SetMonth)
         const monthInput = el('input', {
@@ -139,7 +139,7 @@ export default function (view) {
 
         tr.append(
             el('td', { className: 'pt-user' }, user.UserName),
-            el('td', {}, badge),
+            el('td', {}, status),
             el('td', {}, monthInput),
             el('td', {}, el('div', { className: 'pt-notes-cell' }, notesInput, saved)),
             el('td', {}, actions)
